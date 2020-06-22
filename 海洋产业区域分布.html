@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<!-- saved from url=(0032)http://139.155.73.247/index.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<title>海洋产业区域分布</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="./海洋产业区域分布_files/layui.css" media="all">
+		<script src="./海洋产业区域分布_files/echarts.js.下载"></script>
+		<script src="./海洋产业区域分布_files/china.js.下载"></script>
+		<script src="./海洋产业区域分布_files/jquery-1.9.1.min.js.下载"></script>
+		<script src="./海洋产业区域分布_files/bootstrap.js.下载"></script>
+		<script src="./海洋产业区域分布_files/layui.js.下载"></script>
+	</head>
+	<body data-gr-c-s-loaded="true">
+		<div class="layui-bg-gray">
+			<div class="layui-header">
+				<h1 align="center">海洋产业可视化平台</h1>
+			</div>
+			
+			<ul class="layui-nav layui-bg-green">
+				<li class="layui-nav-item layui-this"><a href="http://139.155.73.247/index.html">海洋产业区域分布</a></li>
+				<li class="layui-nav-item"><a href="http://139.155.73.247/company.html">企业竞争力分析</a></li>	
+			<span class="layui-nav-bar"></span></ul>
+			<div class="container" style="padding:0px;">
+				<div class="row">
+					<div class="col-md-12" id="main" style="height: 700px; -webkit-tap-highlight-color: transparent; user-select: none; position: relative; background: transparent;" _echarts_instance_="ec_1592791185160"><div style="position: relative; overflow: hidden; width: 1309px; height: 700px; cursor: default;"><canvas width="1309" height="700" data-zr-dom-id="zr_0" style="position: absolute; left: 0px; top: 0px; width: 1309px; height: 700px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas></div><div></div></div>
+			</div>
+			<div class="layui-footer layui-bg-green"><a href="http://beian.miit.gov.cn/" target="_blank"><h3 align="center">粤ICP备19071391号</h3></a> </div>
+		</div>
+<script>
+layui.use('element', function(){
+  var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+  
+  //监听导航点击
+  element.on('nav(demo)', function(elem){
+	//console.log(elem)
+	layer.msg(elem.text());
+  });
+});
+</script>
+
+	
+<script type="text/javascript">
+/*为图表生成按钮*/
+function beIcn(charts,functions){
+// Draw icon
+var zr = charts.getZr();
+/*左边中间的按钮*/
+var icon0 = new echarts.graphic.Circle({
+    shape: { r: 30 },
+    style: {
+        text: '返回',
+        fill: '#e0e0e0'
+    },
+    position: [50, zr.getHeight() * 1/2]
+});
+
+var group = new echarts.graphic.Group();
+group.add(icon0);
+zr.add(group);
+icon0.on('click',functions);
+}
+</script>
+<script type="text/javascript">
+/* 全局变量设置 */
+var option={};
+var chart = echarts.init(document.getElementById('main')); 
+var countryViewOption;/*首选项 */
+var cityViewOption;
+var province;
+var city;
+var name = 'china';
+var provinces = ['shanghai', 'hebei','shanxi','neimenggu','liaoning','jilin','heilongjiang','jiangsu','zhejiang','anhui','fujian','jiangxi','shandong','henan','hubei','hunan','guangdong','guangxi','hainan','sichuan','guizhou','yunnan','xizang','shanxi1','gansu','qinghai','ningxia','xinjiang', 'beijing', 'tianjin', 'chongqing', 'xianggang', 'aomen'];
+var provincesText = ['上海', '河北', '山西', '内蒙古', '辽宁', '吉林','黑龙江',  '江苏', '浙江', '安徽', '福建', '江西', '山东','河南', '湖北', '湖南', '广东', '广西', '海南', '四川', '贵州', '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '北京', '天津', '重庆', '香港', '澳门'];
+var dataBaseProvinces = ['上海市', '河北省', '山西省', '内蒙古自治区', '辽宁省', '吉林省','黑龙江省',  '江苏省', '浙江省', '安徽省', '福建省', '江西省', '山东省','河南省', '湖北省', '湖南省', '广东省', '广西壮族自治区', '海南省', '四川省', '贵州省', '云南省', '西藏自治区', '陕西省', '甘肃省', '青海省', '宁夏回族自治区', '新疆维吾尔自治区', '北京市', '天津市', '重庆市', '香港特别行政区', '澳门特别行政区'];
+
+// //实验上分割线----------------------------------------
+// //各省份的数据
+var allData = [];
+// var pieData = 0;
+// for (var i = 0; i < allData.length; i++) {
+//     allData[i].value = Math.round(Math.random() * 100);
+// 	pieData = pieData + allData[i].value;
+// }
+
+//实验下分割线----------------------------------------
+
+
+/*省份钻取处理函数*/
+function showProvince(data){
+	console.log(data);
+    var nameNum = jQuery.inArray(data,provincesText); /* 判断数据是否包含数据返回index */
+    name = provinces[nameNum];
+	var dataBaseName = dataBaseProvinces[nameNum];
+ 	$.get('echartsMap/provinceCity/' + name + '.json', function (geoJson){/* 地图Json文件获取 */
+	echarts.registerMap(name, geoJson);/* 地图注册 */
+	for(var i=0;i < 9;i++){
+		option.series[i].map = name;
+	}
+	option.title.text = data +"海洋产业区域分布";
+	initMap(dataBaseName);
+	window.onresize = chart.resize;
+	chart.hideLoading();
+});
+}
+//省级返回国级按钮
+function exitProvice(){
+		chart.dispose();/*返回省级视图时销毁实例时清除返回按钮*/
+		chart = echarts.init(document.getElementById('main')); 
+		chart.setOption(countryViewOption);	
+		window.onresize = chart.resize;
+		bindClick();
+}
+/*首选项*/
+option = {
+   	title:{
+	    	text:"中国海洋产业区域分布",
+	    	left:'center',
+	    	top:15,
+	      },
+	legend: {
+	        orient: 'vertical',
+	        left: 'left',
+	        data:['海洋电子信息产业','海洋工程装备产业','海上风电','天然气水合物','海洋生物产业','海洋公共服务业','海洋物流业','海洋能源业','滨海旅游业']
+	    },
+	 toolbox: {
+	        show: true,
+	        feature: {
+	            mark: {
+	                show: true
+	            },
+	            dataView: {
+	                show: true,
+	                readOnly: true
+	            },
+	            // magicType: {
+	            //     show: false,
+	            //     type: ["line", "bar"]
+	            // },
+	            saveAsImage: {
+	                show: true
+	            }
+	        }
+	    },
+    tooltip: {
+        trigger: 'item',
+        formatter:'{b}'+ ': ' + '<br/>' + '{c}' + '万元'
+    },
+	
+	visualMap: {
+             min: 0,
+             max: 900,
+             x: 'left',
+             y: 'bottom',
+             text: ['高', '低'], // 文本，默认为数值文本
+             calculable: true,
+             splitNumber: 0,
+			 seriesIndex: [0,1,2,3,4,5,6,7,8],//映射的series范围，用series下标指定
+             color: ['#0c0cbf','#251abf','#2b2bbf','#3e4bbf','#5263bf','#646dbf','#8184bf','#9e9cbf','#a5a8bf','#bdbdbf']
+         },
+    series:[
+		{
+			showLegendSymbol: false,
+			name: '海洋电子信息产业',
+			type: 'map',
+			map: name,
+			selectedMode: 'false',//是否允许选中多个区域
+			roam:true,
+			
+			
+			label: {
+				normal: {
+					show: true
+				},
+				emphasis: {
+					show: true
+				}
+			}
+		},
+		{
+			showLegendSymbol: false,
+			name: '海洋工程装备产业',
+			type: 'map',
+			mapType: name,
+			selectedMode: 'false',//是否允许选中多个区域
+			label: {
+				normal: {
+					show: true
+				},
+				emphasis: {
+					show: true
+				}
+			}
+		},
+		{
+			
+			
+			showLegendSymbol: false,
+			name: '海上风电',
+			type: 'map',
+			mapType: name,
+			selectedMode: 'false',//是否允许选中多个区域
+			label: {
+				normal: {
+					show: true
+				},
+				emphasis: {
+					show: true
+				}
+			}
+		},
+		{
+			
+			
+			showLegendSymbol: false,
+			name: '天然气水合物',
+			type: 'map',
+			mapType: name,
+			selectedMode: 'false',//是否允许选中多个区域
+			label: {
+				normal: {
+					show: true
+				},
+				emphasis: {
+					show: true
+				}
+			},
+			data: allData
+		},{
+			
+			
+			showLegendSymbol: false,
+			name: '海洋生物产业',
+			type: 'map',
+			mapType: name,
+			selectedMode: 'false',//是否允许选中多个区域
+			label: {
+				normal: {
+					show: true
+				},
+				emphasis: {
+					show: true
+				}
+			},
+			data: allData
+		},{
+			
+			
+			showLegendSymbol: false,
+			name: '海洋公共服务业',
+			type: 'map',
+			mapType: name,
+			selectedMode: 'false',//是否允许选中多个区域
+			label: {
+				normal: {
+					show: true
+				},
+				emphasis: {
+					show: true
+				}
+			},
+			data: allData
+		},{
+			
+			
+			showLegendSymbol: false,
+			name: '海洋物流业',
+			type: 'map',
+			mapType: name,
+			selectedMode: 'false',//是否允许选中多个区域
+			label: {
+				normal: {
+					show: true
+				},
+				emphasis: {
+					show: true
+				}
+			},
+			data: allData
+		},{
+			
+			
+			showLegendSymbol: false,
+			name: '海洋能源业',
+			type: 'map',
+			mapType: name,
+			selectedMode: 'false',//是否允许选中多个区域
+			label: {
+				normal: {
+					show: true
+				},
+				emphasis: {
+					show: true
+				}
+			},
+			data: allData
+		},{
+			showLegendSymbol: false,
+			name: '滨海旅游业',
+			type: 'map',
+			mapType: name,
+			selectedMode: 'false',//是否允许选中多个区域
+			label: {
+				normal: {
+					show: true
+				},
+				emphasis: {
+					show: true
+				}
+			},
+			data: allData
+		},
+		//全局饼图
+		{
+			title: {
+				show:true,//显示策略，默认值true,可选为：true（显示） | false（隐藏）
+				text: '中国海洋产业',//主标题文本，'\n'指定换行
+			},
+		    name: "海洋产业",
+		    type: "pie",
+		    radius: "20%",
+		    center: ["88%", "18%"],
+		    data: [
+		        {
+		            value: 1,
+		            name: "海洋电子信息产业"
+		        },
+		        {
+		            value: 1,
+		            name: "海洋工程装备产业"
+		        },
+		        {
+		            value: 1,
+		            name: "海上风电"
+		        },
+		        {
+		            value: 1,
+		            name: "天然气水合物"
+		        },
+		        {
+		            value: 1,
+		            name: "海洋生物产业"
+		        },
+				{
+				    value: 1,
+				    name: "海洋公共服务业"
+				}, {
+		            value: 1,
+		            name: "海洋物流业"
+		        }, {
+		            value: 1,
+		            name: "海洋能源业"
+		        }, {
+		            value: 1,
+		            name: "滨海旅游业"
+		        },
+			]
+		}
+    ],
+	
+	
+	};
+/*结束基础首选项*/
+	
+	window.onresize = chart.resize;/* 根据屏幕调整宽度 */
+	chart.setOption(option);/*设置选项*/
+    countryViewOption = chart.getOption();/*取得基础视图省级内容全局变量 */
+    bindClick();
+ 
+ // 鼠标事件
+ function bindClick(){
+ 	/* 全局鼠标事件绑定 */
+	var thisName;
+	chart.on('mousedown', function (params) {
+			
+		if(thisName != params.name){
+			thisName = params.name;
+			console.log(params);
+		}
+		
+	});
+	chart.on('click', function (params) {
+		console.log(params);
+		var dataName = params.name;/*区域名称*/
+		if((jQuery.inArray(dataName,provincesText))!=-1){/*省级点击触发*/
+			chart.showLoading();
+			showProvince(dataName);/* 展示省级内容 */
+			/*var dom = chart.getDom();*/
+			province = dataName;/*全局省份名称变量*/
+			beIcn(chart,function(params){/*添加返回省级视图按钮*/
+			exitProvice();
+			})
+			}
+		// else{
+		// 	   $.ajax({/*判断JSON文件是否存在*/
+	 //   		  	url:'echartsMap/cityTown/' + dataName + '.json',
+	 //   		 	async:false,
+	 //   			error: function() {
+	 //   				/*JSON文件不存在触发*/
+	 //   				beIcn(chart,function(params){/*添加返回省级视图按钮*/
+	 //   				exitBView(dataName);
+		// 			});
+	 //   							  },
+	 //   	     	success: function() {
+	 //   	     		/*JSON文件存在触发*/
+	 //   	     				city = dataName;
+	 //       			        showCity(city);/* 展示市级内容 */
+	 //       					beIcn(chart,function(params){
+		// 						chart.setOption(cityViewOption);/*添加返回市级视图按钮*/	
+		// 						beIcn(chart, function(params) {
+		// 						exitProvice();
+		// 							});
+	 //    					});
+		// 				}
+		// 		});
+	// 	}
+	});
+
+};
+
+
+function initMap(provinceName){
+	$.ajax({/*判断JSON文件是否存在*/
+			url:'http://www.zengyihan.com/map/getdata?province=' + provinceName,
+			error: function() {
+				console.log("获得地图数据出错");
+				},
+			success: function(data) {
+						console.log("获得地图数据成功");
+						var MaxData = 0;
+						var hydzDataArr=[];
+						var hygcDataArr=[];
+						var hsfdDataArr=[];
+						var trqDataArr=[];
+						var hyswDataArr=[];
+						var hyggDataArr=[];
+						var hywlDataArr=[];
+						var hynyDataArr=[];
+						var bhlyDataArr=[];
+						
+						var hydzDataSum=0;
+						var hygcDataSum=0;
+						var hsfdDataSum=0;
+						var trqDataSum=0;
+						var hyswDataSum=0;
+						var hyggDataSum=0;
+						var hywlDataSum=0;
+						var hynyDataSum=0;
+						var bhlyDataSum=0;
+						
+						for(let mapData of data){
+							let dataName = mapData.name;
+							//如果是省份数据，则要更换一下名字格式
+							if((jQuery.inArray(dataName,dataBaseProvinces))!=-1){
+								let index = jQuery.inArray(dataName,dataBaseProvinces);
+								dataName = provincesText[index];
+							}
+							//获取数据最大值，来设置映射区间最大值
+							if(MaxData < mapData.totalAssets){
+								MaxData = mapData.totalAssets;
+							}
+							//
+							if(mapData.industryType === "海洋电子信息产业"){
+								hydzDataSum = hydzDataSum + mapData.totalAssets;
+								hydzDataArr.push(
+								{name: dataName,
+								 value: mapData.totalAssets
+								 });
+							}
+							if(mapData.industryType === "海洋工程装备产业"){
+								hygcDataSum = hygcDataSum + mapData.totalAssets;
+								hygcDataArr.push(
+								{name: dataName,
+								 value: mapData.totalAssets
+								 });
+							}
+							if(mapData.industryType === "海上风电"){
+								hsfdDataSum = hsfdDataSum + mapData.totalAssets;
+								hsfdDataArr.push(
+								{name: dataName,
+								 value: mapData.totalAssets
+								 });
+							}
+							if(mapData.industryType === "天然气水合物"){
+								trqDataSum = trqDataSum + mapData.totalAssets;
+								trqDataArr.push(
+								{name: dataName,
+								 value: mapData.totalAssets
+								 });
+							}
+							if(mapData.industryType === "海洋生物产业"){
+								hyswDataSum = hyswDataSum + mapData.totalAssets;
+								hyswDataArr.push(
+								{name: dataName,
+								 value: mapData.totalAssets
+								 });
+							}
+							if(mapData.industryType === "海洋公共服务业"){
+								hyggDataSum = hyggDataSum + mapData.totalAssets;
+								hyggDataArr.push(
+								{name: dataName,
+								 value: mapData.totalAssets
+								 });
+							}
+							if(mapData.industryType === "海洋物流业"){
+								hywlDataSum = hywlDataSum + mapData.totalAssets;
+								hywlDataArr.push(
+								{name: dataName,
+								 value: mapData.totalAssets
+								 });
+							}
+							if(mapData.industryType === "海洋能源业"){
+								hynyDataSum = hynyDataSum + mapData.totalAssets;
+								hynyDataArr.push(
+								{name: dataName,
+								 value: mapData.totalAssets
+								 });
+							}
+							if(mapData.industryType === "滨海旅游业"){
+								bhlyDataSum = bhlyDataSum + mapData.totalAssets;
+								bhlyDataArr.push(
+								{name: dataName,
+								 value: mapData.totalAssets
+								 });
+							}
+						}
+						
+						option.series[0].data = hydzDataArr;
+						option.series[1].data = hygcDataArr;
+						option.series[2].data = hsfdDataArr;
+						option.series[3].data = trqDataArr;
+						option.series[4].data = hyswDataArr;
+						option.series[5].data = hyggDataArr;
+						option.series[6].data = hywlDataArr;
+						option.series[7].data = hynyDataArr;
+						option.series[8].data = bhlyDataArr;
+						option.series[9].data[0].value =  hydzDataSum;
+						option.series[9].data[1].value =  hygcDataSum;
+						option.series[9].data[2].value =  hsfdDataSum;
+						option.series[9].data[3].value =  trqDataSum;
+						option.series[9].data[4].value =  hyswDataSum;
+						option.series[9].data[5].value =  hyggDataSum;
+						option.series[9].data[6].value =  hywlDataSum;
+						option.series[9].data[7].value =  hynyDataSum;
+						option.series[9].data[8].value =  bhlyDataSum;
+						
+						//设置映射区最大值
+						MaxData = MaxData * 9;
+						option.visualMap.max = MaxData;
+						// chart.clear();
+						chart.setOption(option);
+						if(provinceName === undefined){
+							countryViewOption = chart.getOption();/*取得基础视图省级内容全局变量 */
+						}
+						
+					}
+		});
+}
+window.onload = initMap(undefined);
+
+</script>
+
+	
+
+</div></body></html>
