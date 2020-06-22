@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!-- saved from url=(0034)http://139.155.73.247/company.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="./company_files/layui.css" media="all">
+		<script src="./company_files/echarts.js.下载"></script>
+		<script src="./company_files/jquery-1.9.1.min.js.下载"></script>
+		<script src="./company_files/bootstrap.js.下载"></script>
+		<script src="./company_files/layui.js.下载"></script>
+		<!-- layui配置 -->
+		<script>
+			//初始化产业类型，并放入session中，
+			// 放入session是为了和iframe标签中的页面共享industryType的值
+			var industryType = '海洋电子信息产业';
+			sessionStorage.setItem('industryType', '海洋电子信息产业');
+			//配置插件目录（省市联动）
+			layui.config({
+			    base: './mods/'
+			    , version: '1.0'
+			});
+			layui.use(['form', 'layedit', 'element', 'layarea', 'layer'], function(){
+			  var element = layui.element
+			  ,form = layui.form
+			  ,layer = layui.layer
+			  ,layedit = layui.layedit
+			  , layarea = layui.layarea; //导航的hover效果、二级菜单等功能，需要依赖element模块
+			 
+			 
+			  element.on('nav(chanye)', function(elem){
+			    console.log(elem); //得到当前点击的DOM对象
+				//得到当前所选产业名
+				industryType = elem.context.text;
+				// 每次点击产业导航就将当前选择的产业更新到session中
+				sessionStorage.setItem('industryType', industryType);
+				console.log(sessionStorage.getItem('industryType'));
+				// 每次点击产业导航就刷新右侧企业选择和数据展示页面
+				$('#shuaxin').attr("src", "echart.html");
+			  });
+			});
+		</script>
+
+		
+
+	<link id="layuicss-layer" rel="stylesheet" href="./company_files/layer.css" media="all"></head>
+	<body class="layui-bg-gray" data-gr-c-s-loaded="true">
+		
+		<div>
+			<div class="layui-header">
+				<h1 align="center">海洋产业可视化平台</h1>
+			</div>
+			
+			<ul class="layui-nav layui-bg-green">
+				<li class="layui-nav-item "><a href="http://139.155.73.247/index.html">海洋产业区域分布</a></li>
+				<li class="layui-nav-item layui-this"><a href="http://139.155.73.247/qiye.html">企业竞争力分析</a></li>	
+			<span class="layui-nav-bar"></span></ul>
+			<div class="layui-row layui-col-xs12 layui-col-sm12 col-md-12">
+				<div id="change" class="layui-col-xs2 layui-col-sm2 col-md-2">
+					<!-- 左侧海洋产业选项列表 -->
+					<div id="chanye" style="width: 100%;">
+						<ul class="layui-nav layui-nav-tree layui-inline" lay-filter="chanye">
+						  <li class="layui-nav-item layui-this" value="海洋电子信息产业" id="dianzi" lay-filter="dianzi"><a href="http://139.155.73.247/company.html#">海洋电子信息产业</a></li>
+						  <li class="layui-nav-item" value="海上风电"><a href="http://139.155.73.247/company.html#">海上风电</a></li>
+						  <li class="layui-nav-item" value="天然气水合物"><a href="http://139.155.73.247/company.html#">天然气水合物</a></li>
+						  <li class="layui-nav-item" value="海洋生物产业"><a href="http://139.155.73.247/company.html#">海洋生物产业</a></li>
+						  <li class="layui-nav-item" value="海洋公共服务业"><a href="http://139.155.73.247/company.html#">海洋公共服务业</a></li>
+						  <li class="layui-nav-item" value="海洋物流业"><a href="http://139.155.73.247/company.html#">海洋物流业</a></li>
+						  <li class="layui-nav-item" value="海洋能源业"><a href="http://139.155.73.247/company.html#">海洋能源业</a></li>
+						  <li class="layui-nav-item" value="滨海旅游业"><a href="http://139.155.73.247/company.html#">滨海旅游业</a></li>
+						<span class="layui-nav-bar"></span></ul>
+					</div>
+				</div>
+				
+				<!-- 右侧局部刷新的容器，装载echart.html页面 -->
+				<div class="layui-inline layui-col-xs10 layui-col-sm10 col-md-10">
+					<iframe src="./company_files/echart.html" id="shuaxin" style="width: 100%; height: 1000px;"></iframe>
+				</div>
+			</div>
+		</div>
+		<div class="layui-footer"><a href="http://beian.miit.gov.cn/" target="_blank"><h3 align="center">粤ICP备19071391号</h3></a> </div>
+		
+	
+
+		
+		
+		</body></html>
